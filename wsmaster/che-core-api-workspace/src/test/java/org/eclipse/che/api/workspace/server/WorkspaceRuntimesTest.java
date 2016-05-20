@@ -26,6 +26,7 @@ import org.eclipse.che.api.machine.server.model.impl.MachineSourceImpl;
 import org.eclipse.che.api.machine.server.recipe.RecipeImpl;
 import org.eclipse.che.api.machine.shared.dto.event.MachineStatusEvent;
 import org.eclipse.che.api.workspace.server.WorkspaceRuntimes.RuntimeDescriptor;
+import org.eclipse.che.api.workspace.server.env.spi.EnvironmentEngine;
 import org.eclipse.che.api.workspace.server.model.impl.EnvironmentImpl;
 import org.eclipse.che.api.workspace.server.model.impl.WorkspaceConfigImpl;
 import org.eclipse.che.api.workspace.server.model.impl.WorkspaceImpl;
@@ -43,6 +44,9 @@ import org.testng.annotations.Test;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.EnumSet;
+
+import java.util.Collections;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -86,13 +90,19 @@ public class WorkspaceRuntimesTest {
     @Mock
     private RuntimeDescriptor descriptor;
 
+    @Mock
+    private EnvironmentEngine envEngine;
+
+    private Map<String, EnvironmentEngine> envEngines;
+
     private WorkspaceRuntimes runtimes;
 
     @BeforeMethod
     public void setUp() throws Exception {
         when(machineManager.createMachineSync(any(), any(), any()))
                 .thenAnswer(invocation -> createMachine((MachineConfig)invocation.getArguments()[0]));
-        runtimes = new WorkspaceRuntimes(machineManager, eventService);
+        envEngines = Collections.singletonMap("envType", envEngine);
+        runtimes = new WorkspaceRuntimes(eventService, envEngines);
     }
 
     @Test(expectedExceptions = NotFoundException.class,
@@ -113,7 +123,7 @@ public class WorkspaceRuntimesTest {
     @Test
     public void workspaceShouldBeInStartingStatusUntilDevMachineIsNotStarted() throws Exception {
         final MachineManager machineManagerMock = mock(MachineManager.class);
-        final WorkspaceRuntimes runtimes = new WorkspaceRuntimes(machineManagerMock, eventService);
+        final WorkspaceRuntimes runtimes = new WorkspaceRuntimes(eventService, envEngines);
         final WorkspaceImpl workspace = createWorkspace();
 
         // check if workspace in starting status before dev machine is started
@@ -135,7 +145,7 @@ public class WorkspaceRuntimesTest {
     @Test
     public void workspaceShouldNotHaveRuntimeIfDevMachineCreationFailed() throws Exception {
         final MachineManager machineManagerMock = mock(MachineManager.class);
-        final WorkspaceRuntimes runtimes = new WorkspaceRuntimes(machineManagerMock, eventService);
+        final WorkspaceRuntimes runtimes = new WorkspaceRuntimes(eventService, envEngines);
         final WorkspaceImpl workspaceMock = createWorkspace();
         when(machineManagerMock.createMachineSync(any(), any(), any()))
                 .thenThrow(new MachineException("Creation error"));
@@ -172,7 +182,7 @@ public class WorkspaceRuntimesTest {
                                             "Workspace can be stopped only if it is 'RUNNING'")
     public void shouldNotStopWorkspaceIfItIsStarting() throws Exception {
         final MachineManager machineManagerMock = mock(MachineManager.class);
-        final WorkspaceRuntimes registry = new WorkspaceRuntimes(machineManagerMock, eventService);
+        final WorkspaceRuntimes registry = new WorkspaceRuntimes(eventService, envEngines);
         final WorkspaceImpl workspace = createWorkspace();
 
         when(machineManagerMock.createMachineSync(any(), any(), any())).thenAnswer(invocationOnMock -> {
@@ -317,7 +327,8 @@ public class WorkspaceRuntimesTest {
     @Test
     public void startingEventShouldBePublishedBeforeStart() throws Exception {
         final WorkspaceImpl workspace = createWorkspace();
-        runtimes = spy(new WorkspaceRuntimes(machineManager, eventService));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
         doNothing().when(runtimes).publishEvent(any(), any(), any());
 
         doAnswer(invocation -> {
@@ -331,7 +342,8 @@ public class WorkspaceRuntimesTest {
     @Test
     public void runningEventShouldBePublishedAfterDevMachineStarted() throws Exception {
         final WorkspaceImpl workspace = createWorkspace();
-        runtimes = spy(new WorkspaceRuntimes(machineManager, eventService));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
         doNothing().when(runtimes).publishEvent(any(), any(), any());
 
         doAnswer(invocation -> {
@@ -348,7 +360,8 @@ public class WorkspaceRuntimesTest {
     @Test
     public void errorEventShouldBePublishedIfDevMachineFailedToStart() throws Exception {
         final WorkspaceImpl workspace = createWorkspace();
-        runtimes = spy(new WorkspaceRuntimes(machineManager, eventService));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
         doNothing().when(runtimes).publishEvent(any(), any(), any());
         doNothing().when(runtimes).cleanupStartResources(any());
 
@@ -370,7 +383,7 @@ public class WorkspaceRuntimesTest {
     @Test
     public void stoppingEventShouldBePublishedBeforeStop() throws Exception {
         final WorkspaceImpl workspace = createWorkspace();
-        runtimes = spy(new WorkspaceRuntimes(machineManager, eventService));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
         doNothing().when(runtimes).publishEvent(any(), any(), any());
 
         doAnswer(invocation -> {
@@ -391,7 +404,7 @@ public class WorkspaceRuntimesTest {
     @Test
     public void stoppedEventShouldBePublishedAfterDevMachineStopped() throws Exception {
         final WorkspaceImpl workspace = createWorkspace();
-        runtimes = spy(new WorkspaceRuntimes(machineManager, eventService));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
         doNothing().when(runtimes).publishEvent(any(), any(), any());
 
         runtimes.start(workspace, workspace.getConfig().getDefaultEnv());
@@ -403,7 +416,7 @@ public class WorkspaceRuntimesTest {
     @Test
     public void errorEventShouldBePublishedIfDevMachineFailedToStop() throws Exception {
         final WorkspaceImpl workspace = createWorkspace();
-        runtimes = spy(new WorkspaceRuntimes(machineManager, eventService));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
         doNothing().when(runtimes).publishEvent(any(), any(), any());
 
         doAnswer(invocation -> {
@@ -508,7 +521,7 @@ public class WorkspaceRuntimesTest {
     @Test
     public void shouldDestroyMachineIfItIsNotAddedWhenEventReceived() throws Exception {
         // prepare runtimes
-        runtimes = spy(new WorkspaceRuntimes(machineManager, eventService));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
         doReturn(false).when(runtimes).addMachine(any());
         // prepare machine
         final MachineImpl machine = createMachine(true);
@@ -529,7 +542,7 @@ public class WorkspaceRuntimesTest {
     public void eventTypesExceptOfRunningShouldBeIgnoredByAddMachineSubscriber(MachineStatusEvent.EventType type)
             throws Exception {
         // prepare runtimes
-        runtimes = spy(new WorkspaceRuntimes(machineManager, eventService));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
         doReturn(false).when(runtimes).addMachine(any());
         // prepare machine
         final MachineImpl machine = createMachine(true);
@@ -607,7 +620,7 @@ public class WorkspaceRuntimesTest {
     public void eventTypesExceptOfDestroyedShouldBeIgnoredByRemoveMachineSubscriber(MachineStatusEvent.EventType type)
             throws Exception {
         // prepare runtimes
-        runtimes = spy(new WorkspaceRuntimes(machineManager, eventService));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
         doNothing().when(runtimes).removeMachine(anyString(), anyString(), anyString());
         // prepare event
         final MachineImpl machine = createMachine(true);
@@ -625,7 +638,7 @@ public class WorkspaceRuntimesTest {
     @Test
     public void removeMachineSubscriberShouldRemoveMachineIfItIsDevAndEventIsDestroyed() throws Exception {
         // prepare runtimes
-        runtimes = spy(new WorkspaceRuntimes(machineManager, eventService));
+        runtimes = spy(new WorkspaceRuntimes(eventService, envEngines));
         doNothing().when(runtimes).removeMachine(anyString(), anyString(), anyString());
         // prepare event
         final MachineImpl machine = createMachine(true);
