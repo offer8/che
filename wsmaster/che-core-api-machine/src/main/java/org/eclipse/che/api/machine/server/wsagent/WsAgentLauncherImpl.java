@@ -46,7 +46,7 @@ public class WsAgentLauncherImpl implements WsAgentLauncher {
 
     private static final String WS_AGENT_PROCESS_OUTPUT_CHANNEL = "workspace:%s:ext-server:output";
 
-    private final Provider<MachineManager> machineManagerProvider;
+    private final Provider<MachineManager> machineMaDnagerProvider;
     private final HttpJsonRequestFactory   httpJsonRequestFactory;
     private final String                   wsAgentStartCommandLine;
     private final long                     wsAgentMaxStartTimeMs;
