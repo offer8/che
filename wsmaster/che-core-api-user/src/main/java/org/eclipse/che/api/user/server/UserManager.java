@@ -68,7 +68,7 @@ public class UserManager {
      * @throws ServerException
      *         when any other error occurs
      */
-    public UserImpl create(User newUser, boolean isTemporary) throws ConflictException, ServerException {
+    public User create(User newUser, boolean isTemporary) throws ConflictException, ServerException {
         requireNonNull(newUser, "Required non-null user");
         final UserImpl user = new UserImpl(generate("user", ID_LENGTH),
                                            newUser.getEmail(),
@@ -133,7 +133,7 @@ public class UserManager {
      * @throws ServerException
      *         when any other error occurs
      */
-    public UserImpl getById(String id) throws NotFoundException, ServerException {
+    public User getById(String id) throws NotFoundException, ServerException {
         requireNonNull(id, "Required non-null id");
         return userDao.getById(id);
     }
@@ -151,7 +151,7 @@ public class UserManager {
      * @throws ServerException
      *         when any other error occurs
      */
-    public UserImpl getByAlias(String alias) throws NotFoundException, ServerException {
+    public User getByAlias(String alias) throws NotFoundException, ServerException {
         requireNonNull(alias, "Required non-null alias");
         return userDao.getByAlias(alias);
     }
@@ -169,7 +169,7 @@ public class UserManager {
      * @throws ServerException
      *         when any other error occurs
      */
-    public UserImpl getByName(String name) throws NotFoundException, ServerException {
+    public User getByName(String name) throws NotFoundException, ServerException {
         requireNonNull(name, "Required non-null name");
         return userDao.getByName(name);
     }
@@ -187,13 +187,13 @@ public class UserManager {
      * @throws ServerException
      *         when any other error occurs
      */
-    public UserImpl getByEmail(String email) throws NotFoundException, ServerException {
+    public User getByEmail(String email) throws NotFoundException, ServerException {
         requireNonNull(email, "Required non-null email");
         return userDao.getByEmail(email);
     }
 
     /**
-     * Removes user by given {@code id} .
+     * Removes user and his dependencies by given {@code id}.
      *
      * @param id
      *         user identifier
@@ -206,6 +206,8 @@ public class UserManager {
      */
     public void remove(String id) throws ServerException, ConflictException {
         requireNonNull(id, "Required non-null id");
+        profileManager.remove(id);
+        preferencesManager.remove(id);
         userDao.remove(id);
     }
 }

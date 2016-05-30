@@ -53,7 +53,7 @@ public class ProfileManager {
      * @throws ServerException
      *         when any other error occurs
      */
-    public ProfileImpl getById(String userId) throws NotFoundException, ServerException {
+    public Profile getById(String userId) throws NotFoundException, ServerException {
         requireNonNull(userId, "Required non-null user id");
         return profileDao.getById(userId);
     }
@@ -72,7 +72,7 @@ public class ProfileManager {
      */
     public void create(Profile profile) throws ServerException, ConflictException {
         requireNonNull(profile, "Required non-null profile");
-        profileDao.create(profile);
+        profileDao.create(new ProfileImpl(profile));
     }
 
     /**

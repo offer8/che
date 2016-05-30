@@ -68,7 +68,7 @@ public class LocalProfileDaoImpl implements ProfileDao {
     }
 
     @Override
-    public void create(Profile profile) {
+    public void create(ProfileImpl profile) {
         lock.writeLock().lock();
         try {
             // just replace existed profile
@@ -79,7 +79,7 @@ public class LocalProfileDaoImpl implements ProfileDao {
     }
 
     @Override
-    public void update(Profile profile) throws NotFoundException {
+    public void update(ProfileImpl profile) throws NotFoundException {
         lock.writeLock().lock();
         try {
             final Profile myProfile = profiles.get(profile.getId());

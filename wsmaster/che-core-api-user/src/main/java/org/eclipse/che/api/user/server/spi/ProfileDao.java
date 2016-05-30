@@ -34,7 +34,7 @@ public interface ProfileDao {
      * @throws ServerException
      *         when any error occurs
      */
-    void create(Profile profile) throws ServerException, ConflictException;
+    void create(ProfileImpl profile) throws ServerException, ConflictException;
 
     /**
      * Updates profile by replacing an existing entity with a new one.
@@ -48,7 +48,7 @@ public interface ProfileDao {
      * @throws ServerException
      *         when any other error occurs
      */
-    void update(Profile profile) throws NotFoundException, ServerException;
+    void update(ProfileImpl profile) throws NotFoundException, ServerException;
 
     /**
      * Removes profile.

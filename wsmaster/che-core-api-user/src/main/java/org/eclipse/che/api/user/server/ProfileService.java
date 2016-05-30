@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.che.api.user.server;
 
-
 import org.eclipse.che.api.core.BadRequestException;
 import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
@@ -70,7 +69,7 @@ public class ProfileService extends Service {
                    @ApiResponse(code = 404, message = "Currently logged in user doesn't have profile"),
                    @ApiResponse(code = 500, message = "Couldn't retrieve profile due to internal server error")})
     public ProfileDto getCurrent() throws ServerException, NotFoundException {
-        final ProfileImpl profile = profileManager.getById(userId());
+        final ProfileImpl profile = new ProfileImpl(profileManager.getById(userId()));
         return linksInjector.injectLinks(asDto(profile), getServiceContext());
     }
 
@@ -109,7 +108,7 @@ public class ProfileService extends Service {
         if (updates == null) {
             throw new BadRequestException("Update attributes required");
         }
-        final ProfileImpl profile = profileManager.getById(userId);
+        final ProfileImpl profile = new ProfileImpl(profileManager.getById(userId));
         profile.setAttributes(updates);
         profileManager.update(profile);
         return asDto(profile);
@@ -130,7 +129,7 @@ public class ProfileService extends Service {
         if (updates == null) {
             throw new BadRequestException("Update attributes required");
         }
-        final ProfileImpl profile = profileManager.getById(userId());
+        final ProfileImpl profile = new ProfileImpl(profileManager.getById(userId()));
         profile.setAttributes(updates);
         profileManager.update(profile);
         return asDto(profile);

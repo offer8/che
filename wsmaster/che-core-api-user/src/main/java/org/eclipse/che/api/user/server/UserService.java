@@ -165,7 +165,7 @@ public class UserService extends Service {
                                                        ConflictException {
         checkPassword(password);
 
-        final UserImpl user = userManager.getById(userId());
+        final UserImpl user = new UserImpl(userManager.getById(userId()));
         user.setPassword(password);
         userManager.update(user);
     }

@@ -34,14 +34,18 @@ public class UserImpl implements User {
         this.id = id;
     }
 
+    public UserImpl(String id, String email, String name) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+    }
+
     public UserImpl(String id,
                     String email,
                     String name,
                     String password,
                     Collection<String> aliases) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
+        this(id, email, name);
         this.password = password;
         if (aliases != null) {
             this.aliases = new ArrayList<>(aliases);
