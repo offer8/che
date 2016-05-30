@@ -92,6 +92,7 @@ import java.util.Map;
 import static org.eclipse.che.ide.api.notification.StatusNotification.DisplayMode.NOT_EMERGE_MODE;
 import static org.eclipse.che.ide.api.notification.StatusNotification.Status.FAIL;
 import static org.eclipse.che.ide.api.resources.ResourceDelta.ADDED;
+import static org.eclipse.che.ide.api.resources.ResourceDelta.DERIVED;
 import static org.eclipse.che.ide.api.resources.ResourceDelta.MOVED_FROM;
 import static org.eclipse.che.ide.api.resources.ResourceDelta.MOVED_TO;
 import static org.eclipse.che.ide.api.resources.ResourceDelta.REMOVED;
@@ -335,6 +336,10 @@ public class TextEditorPresenter<T extends EditorWidget> extends AbstractEditorP
     }
 
     private void onResourceUpdated(ResourceDelta delta) {
+        if ((delta.getFlags() & DERIVED) == 0) {
+            return;
+        }
+
         if (delta.getResource().isFile() && document.getFile().getLocation().equals(delta.getResource().getLocation())) {
             updateContent();
         }
