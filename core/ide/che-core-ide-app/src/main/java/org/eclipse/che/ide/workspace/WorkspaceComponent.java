@@ -60,7 +60,6 @@ import org.eclipse.che.ide.websocket.rest.Unmarshallable;
 import org.eclipse.che.ide.workspace.create.CreateWorkspacePresenter;
 import org.eclipse.che.ide.workspace.start.StartWorkspacePresenter;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
