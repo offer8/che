@@ -47,7 +47,7 @@ public class CheEnvironmentValidator implements EnvironmentValidator {
     public String getType() {
         return CheEnvironmentEngine.ENVIRONMENT_TYPE;
     }
-
+// todo validate links in the same way as machine name
     @Override
     public void validate(Environment env) throws BadRequestException {
         final String envName = env.getName();

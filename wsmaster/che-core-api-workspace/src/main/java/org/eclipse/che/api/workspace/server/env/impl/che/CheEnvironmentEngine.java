@@ -72,6 +72,10 @@ public class CheEnvironmentEngine implements EnvironmentEngine {
         return ENVIRONMENT_TYPE;
     }
 
+    //todo add sorting of machines on start by links
+    // todo what to do if machine needed for other services failed to start
+
+
     @Override
     public List<Machine> start(String workspaceId, Environment env, boolean recover)
             throws ServerException, NotFoundException, ConflictException, IllegalArgumentException {

@@ -40,6 +40,7 @@ public class MachineConfigImpl implements MachineConfig {
     private LimitsImpl           limits;
     private List<ServerConfImpl> servers;
     private Map<String, String>  envVariables;
+    private List<String>         links;
 
     public MachineConfigImpl() {}
 
@@ -49,7 +50,8 @@ public class MachineConfigImpl implements MachineConfig {
                              MachineSource source,
                              Limits limits,
                              List<? extends ServerConf> servers,
-                             Map<String, String> envVariables) {
+                             Map<String, String> envVariables,
+                             List<String> links) {
         this.isDev = isDev;
         this.name = name;
         this.type = type;
@@ -57,7 +59,7 @@ public class MachineConfigImpl implements MachineConfig {
         setServers(servers);
         setSource(source);
         setLimits(limits);
-
+        this.links = links;
     }
 
     public MachineConfigImpl(MachineConfig machineCfg) {
@@ -67,7 +69,8 @@ public class MachineConfigImpl implements MachineConfig {
              machineCfg.getSource(),
              machineCfg.getLimits(),
              machineCfg.getServers(),
-             machineCfg.getEnvVariables());
+             machineCfg.getEnvVariables(),
+             machineCfg.getMachineLinks());
     }
 
     @Override
@@ -146,6 +149,18 @@ public class MachineConfigImpl implements MachineConfig {
     }
 
     @Override
+    public List<String> getMachineLinks() {
+        if (links == null) {
+            links = new ArrayList<>();
+        }
+        return links;
+    }
+
+    public void setMachineLinks(List<String> links) {
+        this.links = links;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof MachineConfigImpl)) return false;
@@ -156,7 +171,8 @@ public class MachineConfigImpl implements MachineConfig {
                Objects.equals(limits, other.limits) &&
                Objects.equals(type, other.type) &&
                Objects.equals(getServers(), other.getServers()) &&
-               Objects.equals(getEnvVariables(), other.getEnvVariables());
+               Objects.equals(getEnvVariables(), other.getEnvVariables()) &&
+               Objects.equals(getMachineLinks(), other.getMachineLinks());
     }
 
     @Override
@@ -169,6 +185,7 @@ public class MachineConfigImpl implements MachineConfig {
         hash = hash * 31 + Objects.hashCode(limits);
         hash = hash * 31 + Objects.hashCode(getServers());
         hash = hash * 31 + Objects.hashCode(getEnvVariables());
+        hash = hash * 31 + Objects.hashCode(getMachineLinks());
         return hash;
     }
 
@@ -182,6 +199,7 @@ public class MachineConfigImpl implements MachineConfig {
                ", limits=" + limits +
                ", servers=" + getServers() +
                ", envVariables=" + getEnvVariables() +
+               ", links=" + getMachineLinks() +
                '}';
     }
 
@@ -199,6 +217,7 @@ public class MachineConfigImpl implements MachineConfig {
         private Limits                     limits;
         private List<? extends ServerConf> servers;
         private Map<String, String>        envVariables;
+        private List<String>               links;
 
         public MachineConfigImpl build() {
             return new MachineConfigImpl(isDev,
@@ -207,7 +226,8 @@ public class MachineConfigImpl implements MachineConfig {
                                          source,
                                          limits,
                                          servers,
-                                         envVariables);
+                                         envVariables,
+                                         links);
         }
 
         public MachineConfigImplBuilder fromConfig(MachineConfig machineConfig) {
@@ -218,6 +238,7 @@ public class MachineConfigImpl implements MachineConfig {
             limits = machineConfig.getLimits();
             servers = machineConfig.getServers();
             envVariables = machineConfig.getEnvVariables();
+            links = machineConfig.getMachineLinks();
             return this;
         }
 
@@ -253,6 +274,11 @@ public class MachineConfigImpl implements MachineConfig {
 
         public MachineConfigImplBuilder setEnvVariables(Map<String, String> envVariables) {
             this.envVariables = envVariables;
+            return this;
+        }
+
+        public MachineConfigImplBuilder setMachineLinks(List<String> links) {
+            this.links = links;
             return this;
         }
     }
