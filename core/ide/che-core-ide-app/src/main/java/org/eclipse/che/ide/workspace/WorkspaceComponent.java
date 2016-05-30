@@ -61,6 +61,7 @@ import org.eclipse.che.ide.workspace.create.CreateWorkspacePresenter;
 import org.eclipse.che.ide.workspace.start.StartWorkspacePresenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.eclipse.che.ide.api.notification.StatusNotification.DisplayMode.FLOAT_MODE;
@@ -298,7 +299,7 @@ public abstract class WorkspaceComponent implements Component, WsAgentStateHandl
             }
         }
         List<MachineConfigDto> machineConfigs =
-                currentEnvironment != null ? currentEnvironment.getMachineConfigs() : new ArrayList<MachineConfigDto>();
+                currentEnvironment != null ? currentEnvironment.getMachineConfigs() : Collections.<MachineConfigDto>emptyList();
 
         for (MachineConfigDto machineConfig : machineConfigs) {
             if (machineConfig.isDev()) {
