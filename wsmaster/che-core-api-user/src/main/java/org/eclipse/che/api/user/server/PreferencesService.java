@@ -22,6 +22,7 @@ import org.eclipse.che.api.core.rest.Service;
 import org.eclipse.che.api.core.rest.annotations.GenerateLink;
 import org.eclipse.che.commons.env.EnvironmentContext;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -52,6 +53,7 @@ public class PreferencesService extends Service {
     @GET
     @Produces(APPLICATION_JSON)
     @GenerateLink(rel = LINK_REL_PREFERENCES)
+    @RolesAllowed({"user", "temp_user"})
     @ApiOperation(value = "Gets preferences of logged in user",
                   notes = "If not all the preferences needed then 'filter' may be used, " +
                           "basically it is regex for filtering preferences by names")
@@ -70,6 +72,7 @@ public class PreferencesService extends Service {
     @POST
     @Consumes(APPLICATION_JSON)
     @GenerateLink(rel = LINK_REL_PREFERENCES)
+    @RolesAllowed({"user", "temp_user"})
     @ApiOperation(value = "Saves preferences of logged in user",
                   notes = "All the existing user's preferences will be override by this method")
     @ApiResponses({@ApiResponse(code = 204, message = "Preferences successfully saved"),
@@ -86,6 +89,7 @@ public class PreferencesService extends Service {
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     @GenerateLink(rel = LINK_REL_PREFERENCES)
+    @RolesAllowed({"user", "temp_user"})
     @ApiOperation(value = "Updates preferences of logged in user",
                   notes = "The merge strategy is used for update, which means that " +
                           "existing preferences with keys equal to update preference keys will " +
@@ -104,6 +108,7 @@ public class PreferencesService extends Service {
     @DELETE
     @Consumes(APPLICATION_JSON)
     @GenerateLink(rel = LINK_REL_PREFERENCES)
+    @RolesAllowed({"user", "temp_user"})
     @ApiOperation(value = "Remove preferences of logged in user.",
                   notes = "If names are not specified, then all the user's preferences will be removed, " +
                           "otherwise only the preferences which names are listed")

@@ -135,8 +135,9 @@ public class UserService extends Service {
     }
 
     @GET
-    @GenerateLink(rel = LINK_REL_CURRENT_USER)
     @Produces(APPLICATION_JSON)
+    @GenerateLink(rel = LINK_REL_CURRENT_USER)
+    @RolesAllowed({"user", "temp_user"})
     @ApiOperation("Get logged in user")
     @ApiResponses({@ApiResponse(code = 200, message = "The response contains currently logged in user entity"),
                    @ApiResponse(code = 500, message = "Couldn't get user due to internal server error")})
@@ -147,8 +148,9 @@ public class UserService extends Service {
 
     @POST
     @Path("/password")
-    @GenerateLink(rel = LINK_REL_CURRENT_USER_PASSWORD)
     @Consumes(APPLICATION_FORM_URLENCODED)
+    @GenerateLink(rel = LINK_REL_CURRENT_USER_PASSWORD)
+    @RolesAllowed("user")
     @ApiOperation(value = "Update password of logged in user",
                   notes = "Password must contain at least 8 characters, " +
                           "passport must contain letters and digits")
@@ -172,8 +174,9 @@ public class UserService extends Service {
 
     @GET
     @Path("/{id}")
-    @GenerateLink(rel = LINK_REL_USER)
     @Produces(APPLICATION_JSON)
+    @GenerateLink(rel = LINK_REL_USER)
+    @RolesAllowed({"user", "system/admin", "system/manager"})
     @ApiOperation("Get user by identifier")
     @ApiResponses({@ApiResponse(code = 200, message = "The response contains requested user entity"),
                    @ApiResponse(code = 404, message = "User with requested identifier not found"),
@@ -187,8 +190,9 @@ public class UserService extends Service {
 
     @GET
     @Path("/find")
-    @GenerateLink(rel = LINK_REL_USER)
     @Produces(APPLICATION_JSON)
+    @GenerateLink(rel = LINK_REL_USER)
+    @RolesAllowed({"user", "system/admin", "system/manager"})
     @ApiOperation("Get user by email or name")
     @ApiResponses({@ApiResponse(code = 200, message = "The response contains requested user entity"),
                    @ApiResponse(code = 404, message = "User with requested email/name not found"),
@@ -214,6 +218,7 @@ public class UserService extends Service {
     @DELETE
     @Path("/{id}")
     @GenerateLink(rel = LINK_REL_USER)
+    @RolesAllowed("system/admin")
     @ApiOperation("Delete user")
     @ApiResponses({@ApiResponse(code = 204, message = "User successfully removed"),
                    @ApiResponse(code = 409, message = "Couldn't remove user due to conflict(e.g. it has related entities)"),

@@ -27,6 +27,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -64,6 +65,7 @@ public class ProfileService extends Service {
     @GET
     @Produces(APPLICATION_JSON)
     @GenerateLink(rel = LINK_REL_CURRENT_PROFILE)
+    @RolesAllowed({"user", "temp_user"})
     @ApiOperation("Get profile of the logged in user")
     @ApiResponses({@ApiResponse(code = 200, message = "The response contains requested profile entity"),
                    @ApiResponse(code = 404, message = "Currently logged in user doesn't have profile"),
@@ -76,8 +78,9 @@ public class ProfileService extends Service {
     @GET
     @Path("/{id}")
     @Produces(APPLICATION_JSON)
-    @ApiOperation("Get profile by user's id")
     @GenerateLink(rel = LINK_REL_CURRENT_PROFILE)
+    @RolesAllowed({"user", "system/admin", "system/manager"})
+    @ApiOperation("Get profile by user's id")
     @ApiResponses({@ApiResponse(code = 200, message = "The response contains requested profile entity"),
                    @ApiResponse(code = 404, message = "Profile for the user with requested identifier doesn't exist"),
                    @ApiResponse(code = 500, message = "Couldn't retrieve profile due to internal server error")})
@@ -91,6 +94,7 @@ public class ProfileService extends Service {
     @Path("/{id}/attributes")
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
+    @RolesAllowed({"system/admin"})
     @ApiOperation(value = "Update the profile attributes of the user with requested identifier",
                   notes = "The replace strategy is used for the update, so all the existing profile " +
                           "attributes will be override by the profile update")
@@ -119,6 +123,7 @@ public class ProfileService extends Service {
     @Consumes(APPLICATION_JSON)
     @Produces(APPLICATION_JSON)
     @GenerateLink(rel = LINK_REL_CURRENT_PROFILE_ATTRIBUTES)
+    @RolesAllowed("user")
     @ApiOperation(value = "Update the profile attributes of the currently logged in user",
                   notes = "The replace strategy is used for the update, so all the existing profile " +
                           "attributes will be override with incoming values")
@@ -138,6 +143,7 @@ public class ProfileService extends Service {
     @DELETE
     @Path("/attributes")
     @GenerateLink(rel = LINK_REL_CURRENT_PROFILE_ATTRIBUTES)
+    @RolesAllowed({"user", "temp_user"})
     @Consumes(APPLICATION_JSON)
     @ApiOperation(value = "Remove profile attributes which names are equal to given",
                   notes = "If names list is not send, all the attributes will be removed, " +

@@ -77,9 +77,9 @@ public class UserManager {
                                            newUser.getAliases());
         try {
             userDao.create(user);
-            profileManager.create(new ProfileImpl(newUser.getId(), newUser.getEmail()));
-            preferencesManager.save(newUser.getId(), ImmutableMap.of("temporary", Boolean.toString(isTemporary),
-                                                                     "codenvy:created", Long.toString(currentTimeMillis())));
+            profileManager.create(new ProfileImpl(user.getId(), newUser.getEmail()));
+            preferencesManager.save(user.getId(), ImmutableMap.of("temporary", Boolean.toString(isTemporary),
+                                                                  "codenvy:created", Long.toString(currentTimeMillis())));
         } catch (ConflictException | ServerException x) {
             // optimistic rollback(won't remove profile if userDao.remove failed)
             // remove operation is not-found-safe so if any exception
