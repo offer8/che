@@ -558,10 +558,10 @@
     ]
   },
   {
-    "name": "console-dotnet-simple",
-    "displayName": "console-dotnet-simple",
-    "path": "/console-dotnet-simple",
-    "description": "The app will print current date to the console.",
+    "name": "aspnet-web-simple",
+    "displayName": "aspnet-web-simple",
+    "path": "/aspnet-mvc-simple",
+    "description": "A simple ASP.net web sample.",
     "projectType": "blank",
     "mixins": [],
     "attributes": {
@@ -573,14 +573,14 @@
     "problems": [],
     "source": {
       "type": "git",
-      "location": "https://github.com/che-samples/console-dotnet-simple.git",
+      "location": "https://github.com/che-samples/aspnet-web-simple.git",
       "parameters": {}
     },
     "commands": [
       {
         "name": "update dependencies",
         "type": "custom",
-        "commandLine": "cd ${current.project.path} && dnu restore",
+        "commandLine": "cd ${current.project.path} && dotnet restore",
         "attributes": {
           "previewUrl": ""
         }
@@ -588,63 +588,16 @@
       {
         "name": "run",
         "type": "custom",
-        "commandLine": "dnx -p ${current.project.path}/project.json run",
+        "commandLine": "cd ${current.project.path} && dotnet run",
         "attributes": {
-          "previewUrl": ""
+          "previewUrl": "http://${server.port.5000}"
         }
       }
     ],
     "links": [],
     "category": "Samples",
     "tags": [
-      "dotnet",
-      "dnx",
-      "mono"
-    ]
-  },
-  {
-    "name": "web-aspnet-simple",
-    "displayName": "web-aspnet-simple",
-    "path": "/web-aspnet-simple",
-    "description": "Sample web application with asp.net.",
-    "projectType": "blank",
-    "mixins": [],
-    "attributes": {
-      "language": [
-        "aspnet"
-      ]
-    },
-    "modules": [],
-    "problems": [],
-    "source": {
-      "type": "git",
-      "location": "https://github.com/che-samples/web-aspnet-simple.git",
-      "parameters": {}
-    },
-    "commands": [
-      {
-        "name": "update dependencies",
-        "type": "custom",
-        "commandLine": "cd ${current.project.path} && dnu restore",
-        "attributes": {
-          "previewUrl": ""
-        }
-      },
-      {
-        "name": "run",
-        "type": "custom",
-        "commandLine": "dnx -p ${current.project.path}/project.json web",
-        "attributes": {
-          "previewUrl": "http://${server.port.5004}"
-        }
-      }
-    ],
-    "links": [],
-    "category": "Samples",
-    "tags": [
-      "aspnet",
-      "dnx",
-      "mono"
+      "dotnet"
     ]
   },
   {
