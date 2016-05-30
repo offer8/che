@@ -25,8 +25,8 @@ import org.eclipse.che.api.promises.client.PromiseProvider;
  */
 public class JsPromiseProvider implements PromiseProvider {
     @Override
-    public native <V> Promise<V> create(Executor<V> conclusion) /*-{
-        return new Promise(conclusion);
+    public native <V> Promise<V> create(Executor<V> executor) /*-{
+        return new Promise(executor);
     }-*/;
 
     @Override
