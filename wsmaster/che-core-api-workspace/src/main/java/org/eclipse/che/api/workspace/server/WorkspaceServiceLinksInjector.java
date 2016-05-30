@@ -212,19 +212,22 @@ public class WorkspaceServiceLinksInjector {
                                                                .toString(),
                                                      WSAGENT_WEBSOCKET_REFERENCE));
                        });
+            }
 
+            for (MachineDto machine : runtime.getMachines()) {
+                final Collection<ServerDto> servers = machine.getRuntime().getServers().values();
                 servers.stream()
                        .filter(server -> TERMINAL_REFERENCE.equals(server.getRef()))
                        .findAny()
-                       .ifPresent(terminal -> devMachine.getLinks()
-                                                        .add(createLink("GET",
-                                                                        UriBuilder.fromUri(terminal.getUrl())
-                                                                                  .scheme("https".equals(ideUri.getScheme()) ? "wss"
-                                                                                                                             : "ws")
-                                                                                  .path("/pty")
-                                                                                  .build()
-                                                                                  .toString(),
-                                                                        TERMINAL_REFERENCE)));
+                       .ifPresent(terminal -> machine.getLinks()
+                                                     .add(createLink("GET",
+                                                                     UriBuilder.fromUri(terminal.getUrl())
+                                                                               .scheme("https".equals(ideUri.getScheme()) ? "wss"
+                                                                                                                          : "ws")
+                                                                               .path("/pty")
+                                                                               .build()
+                                                                               .toString(),
+                                                                     TERMINAL_REFERENCE)));
             }
         }
     }

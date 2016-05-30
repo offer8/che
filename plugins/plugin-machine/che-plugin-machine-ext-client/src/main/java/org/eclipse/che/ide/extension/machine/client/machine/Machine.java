@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.che.ide.extension.machine.client.machine;
 
-import com.google.gwt.user.client.Window;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import org.eclipse.che.api.core.model.machine.MachineStatus;
+import org.eclipse.che.api.core.rest.shared.dto.Link;
 import org.eclipse.che.api.machine.shared.Constants;
 import org.eclipse.che.api.machine.shared.dto.MachineDto;
 import org.eclipse.che.api.machine.shared.dto.MachineSourceDto;
@@ -37,6 +37,7 @@ public class Machine {
 
     private final MachineDto    descriptor;
     private final EntityFactory entityFactory;
+    private final List<Link>    machineLinks;
 
     private String activeTabName;
 
@@ -46,7 +47,7 @@ public class Machine {
                    @Assisted MachineDto descriptor) {
         this.entityFactory = entityFactory;
         this.descriptor = descriptor;
-
+        this.machineLinks = descriptor.getLinks();
         this.activeTabName = locale.tabInfo();
     }
 
@@ -107,18 +108,9 @@ public class Machine {
     }
 
     public String getTerminalUrl() {
-        Map<String, ServerDto> serverDescriptors = descriptor.getRuntime().getServers();
-
-        for (ServerDto descriptor : serverDescriptors.values()) {
-            if (Constants.TERMINAL_REFERENCE.equals(descriptor.getRef())) {
-                String terminalUrl = descriptor.getUrl();
-
-                String uriWithoutProtocol = terminalUrl.substring(terminalUrl.indexOf(':'), terminalUrl.length());
-                String protocol = Window.Location.getProtocol().equals("https:") ? "wss" : "ws";
-
-                return protocol +
-                       uriWithoutProtocol +
-                       (terminalUrl.endsWith("/") ? "pty" : "/pty");
+        for (Link link : machineLinks) {
+            if (Constants.TERMINAL_REFERENCE.equals(link.getRel())) {
+                return link.getHref();
             }
         }
 
